@@ -1,0 +1,125 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <title>Chat room</title>
+    <script src="/static/jquery-3.2.1.js"></script>
+    <script type="text/javascript">
+      
+      var websocket;
+      var username;
+      var error = false;
+      
+      function connect()
+      {
+          wsHost = "ws://" + window.location.host + "/websocket";
+
+          websocket = new WebSocket(wsHost);
+
+          websocket.onopen    = function(evt) { onOpen(evt) }; 
+          websocket.onclose   = function(evt) { onClose(evt) }; 
+          websocket.onmessage = function(evt) { onMessage(evt) }; 
+          websocket.onerror   = function(evt) { onError(evt) };
+
+          $("#connect_button").val("Leave");
+      };  
+      
+      function disconnect() {
+          websocket.close();
+          $("#connect_button").val("Join");
+      };
+
+      function toggle_connection(){
+          if (typeof websocket !== 'undefined') {
+              if (websocket.readyState == websocket.OPEN) {
+                  disconnect();
+              } else {
+                  connect();
+              }
+          } else {
+               connect();
+          };
+      };
+
+      function sendTxt() {
+          if (websocket.readyState == websocket.OPEN) {
+              text = $("#send_txt").val();
+              send("message", text);
+          }
+      };
+
+      function onOpen(evt) { 
+          username = $("#user_name").val(); 
+          send("username", username);
+      };
+
+      function onClose(evt) {
+        if (!error) {
+          showScreen('<span style="color: red;">DISCONNECTED </span>');
+        }
+        error = false;
+      };  
+
+      function onMessage(evt) { 
+          message = JSON.parse(evt.data);
+          if (message.type == 'error') {
+              showScreen('<span style="color: red;">ERROR: ' + message.data + '</span>');
+              error = true;
+              disconnect();
+          }
+          else if (message.type == 'status') {
+            showScreen('<span style="color: green;">CONNECTED as ' + username + '</span>');
+          }
+          else {
+            showScreen('<span style="color: blue;">' + message.data + '</span>');
+          }
+          
+      };
+
+      function onError(evt) {
+          showScreen('<span style="color: red;">ERROR: ' + evt.data + '</span>');
+      };
+
+      function showScreen(txt) { 
+          $('#output').prepend('<p>' + txt + '</p>');
+      };
+
+      function clearScreen() 
+      { 
+          $('#output').html("");
+      };
+
+      function send(type, data)
+      {
+          json = JSON.stringify({type: type, data: data});
+          websocket.send(json);
+      };
+
+    </script>
+  </head>
+
+  <body>
+    <div id="header">
+      <h2>Chat Room</h2>
+    </div>
+
+    <div id="navigation">
+      <p>Enter nickname: 
+        <input type='text' id="user_name" value=""></input>
+        <input type="button" id="connect_button" onclick="toggle_connection()" value="Join"></input>
+      </p>
+      <div id="connected">        
+        <p>Enter message:
+          <input type='text' id="send_txt" value=></input>
+          <button type="button" onclick="sendTxt()">Send</button>
+        </p>
+      </div>
+      <div id="content">            
+        <button id="clear" onclick="clearScreen()" >Clear all</button>
+      </div>
+    </div>
+
+    <div id="output">
+    </div>
+
+  </body>
+</html> 
