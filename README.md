@@ -6,16 +6,16 @@ Websocket chat with single chat room and bot.
 Dependencies
 -----
 
-    $ rebar3 get-deps
+    $ make deps
 
 Build
 -----
 
-    $ rebar3 compile
+    $ make compile
 
 Start
 -----
 
-    $ rebar3 shell
+    $ make start
 
 Application was tested on Erlang/OTP 19.
