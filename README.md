@@ -3,6 +3,11 @@ chat
 
 Websocket chat with single chat room and bot.
 
+Dependencies
+-----
+
+    $ rebar3 get-deps
+
 Build
 -----
 
@@ -12,3 +17,5 @@ Start
 -----
 
     $ rebar3 shell
+
+Application was tested on Erlang/OTP 19.

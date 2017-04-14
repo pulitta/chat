@@ -31,5 +31,5 @@ message(Username, Message) ->
 
 %% @doc get current datetime
 timestamp() ->
-    {{Year,Month,Day},{Hour,Minute,Second}} = calendar:now_to_local_time(erlang:now()),
+    {{Year,Month,Day},{Hour,Minute,Second}} = calendar:local_time(),
     io_lib:format("~4..0B-~2..0B-~2..0B ~2..0B:~2..0B:~2..0B", [Year, Month, Day, Hour, Minute, Second]).

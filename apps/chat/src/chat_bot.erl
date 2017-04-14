@@ -30,7 +30,7 @@ start_link(Args) ->
 
 init(_) ->
     gproc:reg({p,l,room}),
-    random:seed(erlang:now()),
+    rand:seed(exs64),
     TimerRef = erlang:send_after(timeout(), self(), timeout),
     {ok, #state{timer = TimerRef}}.
 
@@ -62,6 +62,6 @@ code_change(_OldVsn, State, _Extra) ->
 
 %% @doc make random values for timeout
 timeout() ->
-    RandomNumber = random:uniform(100),
+    RandomNumber = rand:uniform(100),
     ?TIMER_FACTOR*RandomNumber.
 
