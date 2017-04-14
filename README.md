@@ -18,4 +18,5 @@ Start
 
     $ make start
 
+Server is running at localhost:8080 by default.
 Application was tested on Erlang/OTP 19.
